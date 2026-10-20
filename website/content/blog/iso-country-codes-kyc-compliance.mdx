@@ -429,8 +429,8 @@ import { country } from '@koshmoney/countries';
 
 // Sanctions lists should come from an external compliance data provider
 // and be updated regularly. This is a simplified example.
-const OFAC_COMPREHENSIVE = new Set(['CU', 'IR', 'KP', 'SY', 'RU']);
-const EU_SANCTIONED = new Set(['BY', 'IR', 'KP', 'SY', 'RU']);
+const OFAC_COMPREHENSIVE = new Set(['CU', 'IR', 'KP', 'RU']);
+const EU_SANCTIONED = new Set(['BY', 'IR', 'KP', 'RU']);
 const UN_SANCTIONED = new Set(['CF', 'CD', 'IR', 'KP', 'LY', 'ML', 'SO', 'SS', 'YE']);
 
 type SanctionsResult = {

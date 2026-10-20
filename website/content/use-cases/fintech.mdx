@@ -61,7 +61,7 @@ Screen customer countries against sanctions lists and internal risk policies:
 import { country } from '@koshmoney/countries';
 
 // Example restricted country list (consult actual OFAC SDN list)
-const OFAC_RESTRICTED = new Set(['CU', 'IR', 'KP', 'SY', 'RU']);
+const OFAC_RESTRICTED = new Set(['CU', 'IR', 'KP', 'RU']);
 const HIGH_RISK = new Set(['AF', 'MM', 'SO', 'YE', 'VE']);
 
 type RiskLevel = 'blocked' | 'high' | 'standard';

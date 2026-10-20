@@ -2,7 +2,7 @@
 description: "Complete 2026 OFAC sanctioned countries list for developers. Build sanctions screening in TypeScript with code examples, comparison of OFAC vs EU vs UN sanctions, and common compliance mistakes."
 faqs:
   - q: "What countries are on the OFAC sanctions list in 2026?"
-    a: "As of 2026, OFAC maintains comprehensive sanctions programs against Iran, North Korea, Cuba, Syria, and the Crimea/Donetsk/Luhansk regions of Ukraine (Russian-occupied). Targeted or partial sanctions also apply to Myanmar, Venezuela, Belarus, and Russia more broadly."
+    a: "As of 2026, OFAC maintains comprehensive sanctions programs against Iran, North Korea, Cuba, and the Crimea/Donetsk/Luhansk regions of Ukraine (Russian-occupied). Targeted or partial sanctions also apply to Myanmar, Venezuela, Belarus, and Russia more broadly."
   - q: "Do developers need to worry about OFAC sanctions?"
     a: "Yes. Any software that processes financial transactions, provides digital services to users worldwide, or handles payments must screen against sanctioned countries and the SDN list. OFAC violations carry strict liability, meaning even accidental violations can result in fines up to $361,000 per occurrence for civil penalties."
   - q: "What is the difference between OFAC comprehensive and targeted sanctions?"
@@ -54,7 +54,6 @@ These jurisdictions are subject to broad, economy-wide sanctions. Virtually all 
 | Iran | IR | IRN | Iranian Transactions and Sanctions Regulations | Near-total trade and financial embargo |
 | North Korea | KP | PRK | North Korea Sanctions Regulations | Near-total trade and financial embargo |
 | Cuba | CU | CUB | Cuban Assets Control Regulations | Broad trade and financial restrictions |
-| Syria | SY | SYR | Syrian Sanctions Regulations | Broad trade, financial, and energy restrictions |
 | Crimea Region (Ukraine) | UA | UKR | Ukraine-/Russia-Related Sanctions | Applies to Crimea, Donetsk, and Luhansk regions specifically |
 
 ### Targeted/Partial Sanctions Programs
@@ -86,6 +85,7 @@ OFAC also maintains sanctions programs targeting specific persons, entities, and
 - **Somalia** -- Al-Shabaab and related
 - **South Sudan** -- Conflict-related
 - **Sudan** -- Transitional period sanctions
+- **Syria** -- Assad and his associates, captagon trafficking, terrorism-related designations (the country-wide program ended July 1, 2025)
 - **Yemen** -- Houthi-related designations
 - **Zimbabwe** -- Government officials
 
@@ -140,7 +140,7 @@ import { country } from '@koshmoney/countries';
 
 // Define sanctions tiers based on your compliance policy
 // These sets should be loaded from your compliance data source and updated regularly
-const COMPREHENSIVE_SANCTIONS = new Set(['IR', 'KP', 'CU', 'SY']);
+const COMPREHENSIVE_SANCTIONS = new Set(['IR', 'KP', 'CU']);
 const TARGETED_SANCTIONS = new Set(['RU', 'BY', 'MM', 'VE']);
 const CRIMEA_REGION = new Set(['UA']); // Requires sub-region check
 
@@ -224,7 +224,7 @@ function getComplianceProfile(countryCode: string): ComplianceProfile | null {
   if (!country.isValid(countryCode)) return null;
 
   const code = countryCode.toUpperCase();
-  const BLOCKED = new Set(['IR', 'KP', 'CU', 'SY']);
+  const BLOCKED = new Set(['IR', 'KP', 'CU']);
   const RESTRICTED = new Set(['RU', 'BY', 'MM', 'VE']);
 
   if (BLOCKED.has(code)) {
@@ -289,7 +289,7 @@ function loadSanctionsConfig(): SanctionsConfig {
   // In production, load this from a database, API, or compliance feed
   // Updated regularly by your compliance team
   return {
-    comprehensiveSanctions: new Set(['IR', 'KP', 'CU', 'SY']),
+    comprehensiveSanctions: new Set(['IR', 'KP', 'CU']),
     targetedSanctions: new Set(['RU', 'BY', 'MM', 'VE']),
     fatfBlacklist: new Set(['IR', 'KP', 'MM']),
     fatfGreylist: new Set([
@@ -473,7 +473,7 @@ Different sanctions regimes have different scopes, enforcement mechanisms, and p
 | **Primary Lists** | SDN List, SSI List, Entity List | EU Consolidated Sanctions List | UN Consolidated List |
 | **Liability Standard** | Strict liability (no intent required) | Varies by member state | Varies by member state |
 | **Max Civil Penalty** | $361,000+ per violation | Varies; up to millions EUR | Implemented by member states |
-| **Comprehensive Programs** | Iran, North Korea, Cuba, Syria, Crimea | Russia, Belarus, Myanmar, Iran, North Korea, Syria | North Korea, Iran (nuclear), others |
+| **Comprehensive Programs** | Iran, North Korea, Cuba, Crimea | Russia, Belarus, Myanmar, Iran, North Korea | North Korea, Iran (nuclear), others |
 | **Update Frequency** | Multiple times per week (SDN) | As needed, often monthly | As needed by UNSC resolution |
 | **Extraterritorial Reach** | Extensive (any USD transaction) | Growing (EU nexus) | Through member state implementation |
 
@@ -486,7 +486,7 @@ Not all sanctions regimes target the same countries or to the same extent:
 | Iran | Comprehensive | Targeted (nuclear, oil) | Targeted (nuclear) |
 | North Korea | Comprehensive | Comprehensive | Comprehensive |
 | Cuba | Comprehensive | No sanctions | No sanctions |
-| Syria | Comprehensive | Comprehensive | No comprehensive |
+| Syria | Targeted | Targeted | No sanctions |
 | Russia | Targeted (extensive) | Comprehensive (since 2022) | No sanctions |
 | Belarus | Targeted | Comprehensive | No sanctions |
 | Myanmar | Targeted | Targeted | Targeted (arms embargo) |
@@ -509,12 +509,12 @@ interface RegimeConfig {
 // Each regime has its own blocked and restricted lists
 const REGIMES: Record<SanctionsRegime, RegimeConfig> = {
   OFAC: {
-    blocked: new Set(['IR', 'KP', 'CU', 'SY']),
-    restricted: new Set(['RU', 'BY', 'MM', 'VE']),
+    blocked: new Set(['IR', 'KP', 'CU']),
+    restricted: new Set(['RU', 'BY', 'MM', 'VE', 'SY']),
   },
   EU: {
-    blocked: new Set(['KP', 'SY', 'RU', 'BY']),
-    restricted: new Set(['IR', 'MM', 'VE']),
+    blocked: new Set(['KP', 'RU', 'BY']),
+    restricted: new Set(['IR', 'MM', 'VE', 'SY']),
   },
   UN: {
     blocked: new Set(['KP']),
@@ -580,7 +580,7 @@ Sanctions change frequently. Hardcoding country lists directly in your applicati
 
 ```typescript copy
 // WRONG: Hardcoded list that will go stale
-const SANCTIONED = ['IR', 'KP', 'CU', 'SY'];
+const SANCTIONED = ['IR', 'KP', 'CU'];
 
 // CORRECT: Load from a configurable data source
 const sanctionsConfig = await loadSanctionsConfig(); // From database, API, or config service
@@ -634,7 +634,7 @@ OFAC sanctions on the Crimea, Donetsk, and Luhansk regions of Ukraine target spe
 
 ```typescript copy
 // WRONG: Blocking all of Ukraine
-const SANCTIONED = new Set(['IR', 'KP', 'CU', 'SY', 'UA']);
+const SANCTIONED = new Set(['IR', 'KP', 'CU', 'UA']);
 
 // CORRECT: Ukraine is not sanctioned; specific regions are
 // You need additional data (IP geolocation, address) to identify
@@ -707,7 +707,7 @@ function assessRussiaUkraineRisk(
 ## Summary
 
 - **OFAC sanctions carry strict liability** -- even unintentional violations are penalized
-- **Comprehensive sanctions** (Iran, North Korea, Cuba, Syria, Crimea regions) block virtually all transactions
+- **Comprehensive sanctions** (Iran, North Korea, Cuba, Crimea regions) block virtually all transactions
 - **Targeted sanctions** (Russia, Belarus, Myanmar, Venezuela) require enhanced screening but do not block all activity
 - **Country-level screening is necessary but not sufficient** -- you also need entity-level SDN screening
 - **Never hardcode sanctions lists** -- load them from a regularly updated compliance data source
